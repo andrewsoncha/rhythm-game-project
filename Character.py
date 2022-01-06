@@ -24,10 +24,11 @@ class vec2D:
         return vec2D(resultX, resultY)
     def __abs__(self):
         return self.x*self.x+self.y*self.y
-    def normalize(vec):
-        return vec/abs(vec)
     def __str__(self):
         return '('+str(self.x)+','+str(self.y)+')'
+
+def normalize(vec):
+    return vec/abs(vec)
 
 def distVec(vecA, vecB):
     return abs(vecA-vecB)
@@ -72,22 +73,27 @@ class character(gameObj):#base class for all characters
             #if not already collided, go toward target
             if not collide(self, self.target):
                 direction = self.target.point-self.point
-                direction /= abs(direction)
-                self.point += direction*self.speed
+                direction = normalize(direction)
+                direction *= self.speed
+                self.point += direction
     def characterAttack(self):
-        self.target.health-=self.attack
-        if self.target.health<0:
-            self.target.health = 0
-        soundObj = pygame.mixer.Sound('clubHit.mp3')
-        soundObj.play()
+        if self.attackType==1:
+            self.target.health-=self.attack
+            if self.target.health<0:
+                self.target.health = 0
+            direction = self.target.point-self.point
+            self.target.point += normalize(direction)*1000.0
+            soundObj = pygame.mixer.Sound('clubHit.mp3')
+            soundObj.play()
     def update(self, surface, characterList, attackAvailable):
         #this function is called every frame the character exists
         #make up target->move toward target->if it is time to attack, attack
-        self.updateTarget(characterList)
-        self.moveTowardTarget()
+        if len(characterList)>0:
+            self.updateTarget(characterList)
+            self.moveTowardTarget()
+            if attackAvailable and collide(self, self.target) and self.target.health>0:
+                self.characterAttack()
         self.draw(surface)
-        if attackAvailable and collide(self, self.target) and self.target.health>0:
-            self.characterAttack()
         #todo: check if it's the right time to attack and attack
     def draw(self, surface):
         #this function will probably get overloaded in the playerCharacter and the enemy class

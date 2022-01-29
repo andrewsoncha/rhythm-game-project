@@ -25,12 +25,28 @@ class beat:
         self.beatN = init_beatN
         self.soundObj = init_soundObj
         self.timer.attach(self)
+
+    def load(init_timer, init_soundObj, file_path):
+        file = open(file_path, 'r')
+        barN = int(file.readline())
+        barList = [False]*barN
+        for i in range(barN):
+            line = file.readline()
+            if int(line)==0:
+                barList[i] = False
+            else:
+                barList[i] = True
+        file.close()
+        return beat(init_timer, barList, barN, init_soundObj)
     
-    def makeFromBpm(init_timer, beatN, bpm, soundObj):
+    def makeFromBpm(init_timer, beatN, bpm, init_soundObj):
         bar = [False]*beatN
         
         for i in range(beatN):
-            if init_timer.beatMs*i%int(60000/bpm)==0:
+            if init_timer.beatMs*i%int(60000/bpm)<init_timer.beatMs:
                bar[i] = True
-
-        return beat(init_timer, bar,200, pygame.mixer.Sound('drum.mp3'))
+        if init_soundObj==None:
+            soundObj = pygame.mixer.Sound('drum.mp3')
+        else:
+            soundObj = init_soundObj
+        return beat(init_timer, bar,beatN, soundObj)

@@ -102,3 +102,11 @@ class character(gameObj):#base class for all characters
         gray = (125,125,125)
         drawColor = (self.color[0]*(self.health/self.maxHealth)+125*(1-self.health/self.maxHealth),self.color[1]*(self.health/self.maxHealth)+125*(1-self.health/self.maxHealth),self.color[2]*(self.health/self.maxHealth)+125*(1-self.health/self.maxHealth))
         pygame.draw.circle(surface, drawColor,(self.point.x, self.point.y), self.radius)
+
+'''
+class playerCharacter(gameCharacter):
+    
+
+class enemy(gameCharacter):
+        
+'''

@@ -21,7 +21,8 @@ flag = True
 
 white = [255,255,255]
 #green = [0,255,0]
-bpm = int(input())
+#bpm = int(input())
+bpm = 80
 
 print(60000/bpm)
 
